@@ -1,4 +1,4 @@
-FROM golang:1.13.6-stretch
+FROM golang:1.18.4
 
 ENV GOPATH /go
 
@@ -11,8 +11,8 @@ RUN apt-get update \
                 net-tools 
 
 RUN cd / \
-    && wget https://www.foundationdb.org/downloads/6.2.11/ubuntu/installers/foundationdb-clients_6.2.11-1_amd64.deb \
-    && dpkg -i foundationdb-clients_6.2.11-1_amd64.deb
+    && wget https://github.com/apple/foundationdb/releases/download/7.1.61/foundationdb-clients_7.1.61-1_amd64.deb \
+    && dpkg -i foundationdb-clients_7.1.61-1_amd64.deb
 
 ADD . /go/src/github.com/pingcap/go-ycsb
 
@@ -20,13 +20,13 @@ WORKDIR /go/src/github.com/pingcap/go-ycsb
 
 RUN GO111MODULE=on go build -tags "foundationdb" -o /go-ycsb ./cmd/*
 
-FROM ubuntu:18.04
+FROM ubuntu:22.04
 
 RUN apt-get update \
  && apt-get install -y dpkg
 
-COPY --from=0 /foundationdb-clients_6.2.11-1_amd64.deb /foundationdb-clients_6.2.11-1_amd64.deb
-RUN dpkg -i foundationdb-clients_6.2.11-1_amd64.deb
+COPY --from=0 /foundationdb-clients_7.1.61-1_amd64.deb /foundationdb-clients_7.1.61-1_amd64.deb
+RUN dpkg -i foundationdb-clients_7.1.61-1_amd64.deb
 
 COPY --from=0 /go-ycsb /go-ycsb
 

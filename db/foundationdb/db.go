@@ -39,12 +39,13 @@ type fDB struct {
 
 func createDB(p *properties.Properties) (ycsb.DB, error) {
 	clusterFile := p.GetString(fdbClusterFile, "")
-	database := p.GetString(fdbDatabase, "DB")
-	apiVersion := p.GetInt(fdbAPIVersion, 510)
+	//database := p.GetString(fdbDatabase, "DB")
+	apiVersion := p.GetInt(fdbAPIVersion, 710)
 
 	fdb.MustAPIVersion(apiVersion)
 
-	db, err := fdb.Open(clusterFile, []byte(database))
+	//db, err := fdb.Open(clusterFile, []byte(database))
+	db, err := fdb.OpenDatabase(clusterFile)
 	if err != nil {
 		return nil, err
 	}
